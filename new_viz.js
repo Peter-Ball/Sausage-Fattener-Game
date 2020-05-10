@@ -32,32 +32,19 @@ window.onload = function() {
     var WIDTH = canvas.width;
     var HEIGHT = canvas.height;
 
-    var barWidth = (WIDTH / bufferLength) * 2.5;
-    var barHeight;
-    var x = 0;
-
     function renderFrame() {
       requestAnimationFrame(renderFrame);
 
-      x = 0;
-
       analyser.getByteFrequencyData(dataArray);
+
+      var avg_freq = dataArray.reduce((previous, current) => current += previous) / dataArray.length;
 
       ctx.fillStyle = "#000";
       ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-      for (var i = 0; i < bufferLength; i++) {
-        barHeight = dataArray[i];
-        
-        var r = barHeight + (25 * (i/bufferLength));
-        var g = 250 * (i/bufferLength);
-        var b = 50;
-
-        ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
-        ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
-
-        x += barWidth + 1;
-      }
+      ctx.arc(WIDTH/2, HEIGHT/2, avg_freq, 0, 2 * Math.PI);
+      ctx.strokeStyle = "red";
+      ctx.stroke();
     }
 
     audio.play();
